@@ -22,7 +22,8 @@
     "deploy": "gh-pages -d example/build"
   },
   "dependencies": {
-    "hoist-non-react-statics": "^3.3.0"
+    "hoist-non-react-statics": "^3.3.0",
+    "invariant": "^2.2.4"
   },
   "peerDependencies": {
     "prop-types": "^15.5.10",

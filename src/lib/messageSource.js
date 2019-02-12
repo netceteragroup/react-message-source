@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import invariant from 'invariant';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { getMessageWithNamedParams, getMessageWithParams } from './messages';
 import { normalizeKeyPrefix } from './utils';
@@ -50,6 +51,22 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
       getMessageWithNamedParams(this.context, normalizedKeyPrefix + key, namedParams);
 
     render() {
+      if (process.env.NODE_ENV !== 'production') {
+        /* eslint-disable react/prop-types */
+        invariant(
+          !this.props.getMessage,
+          `[react-message-source]: [%s] already has a prop named [getMessage]. It will be overwritten.`,
+          wrappedComponentName,
+        );
+
+        invariant(
+          !this.props.getMessageWithNamedParams,
+          `[react-message-source]: [%s] already has a prop named [getMessageWithNamedParams]. It will be overwritten.`,
+          wrappedComponentName,
+        );
+        /* eslint-enable react/prop-types */
+      }
+
       return (
         <WrappedComponent
           {...this.props}
