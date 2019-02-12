@@ -7,6 +7,7 @@ import * as MessageSource from './messageSource';
 describe('MessageSource', () => {
   const translations = {
     'hello.world': 'Hello World',
+    'greeting.named': 'Hello {name}',
   };
 
   it('correct props are attached to the wrapped component', () => {
@@ -18,6 +19,29 @@ describe('MessageSource', () => {
 
     const captorInstance = root.findByType(PropsCaptor);
     expect(captorInstance.props.getMessage).toBeDefined();
+    expect(captorInstance.props.getMessageWithNamedParams).toBeDefined();
+  });
+
+  it('retrieves the correct translated value with named parameters', () => {
+    function Nested(props) {
+      const { getMessageWithNamedParams } = props;
+      return getMessageWithNamedParams('greeting.named', {
+        name: 'John Doe',
+      });
+    }
+
+    const NestedHOC = MessageSource.withMessages(Nested);
+
+    const renderer = TestRenderer.create(
+      <MessageSource.Provider value={translations}>
+        <NestedHOC />
+      </MessageSource.Provider>,
+    );
+
+    const { root } = renderer;
+    const nestedComponentInstance = root.findByType(Nested);
+
+    expect(nestedComponentInstance.children[0]).toBe('Hello John Doe');
   });
 
   it('retrieves the correct translated value without prefix', () => {

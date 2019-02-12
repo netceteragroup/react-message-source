@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import hoistNonReactStatics from 'hoist-non-react-statics';
-import { getMessageWithParams } from './messages';
+import { getMessageWithNamedParams, getMessageWithParams } from './messages';
 import { normalizeKeyPrefix } from './utils';
 
 /**
@@ -17,16 +17,24 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
    * The enhancer HOC.
    */
   class Enhancer extends React.Component {
-    static contextType = MessageSourceContext;
-
-    static displayName = `WithMessages(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
-
     getMessage = (key, ...params) => getMessageWithParams(this.context, keyPrefix + key, ...params);
 
+    getMessageWithNamedParams = (key, namedParams) =>
+      getMessageWithNamedParams(this.context, keyPrefix + key, namedParams);
+
     render() {
-      return <WrappedComponent {...this.props} getMessage={this.getMessage} />;
+      return (
+        <WrappedComponent
+          {...this.props}
+          getMessage={this.getMessage}
+          getMessageWithNamedParams={this.getMessageWithNamedParams}
+        />
+      );
     }
   }
+
+  Enhancer.contextType = MessageSourceContext;
+  Enhancer.displayName = `WithMessages(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
 
   return hoistNonReactStatics(Enhancer, WrappedComponent);
 }
@@ -74,4 +82,5 @@ export const withMessages = internalWithMessages;
  */
 export const propTypes = {
   getMessage: PropTypes.func,
+  getMessageWithNamedParams: PropTypes.func,
 };

@@ -1,10 +1,16 @@
 import React from 'react';
 import * as MessageSource from 'react-message-source';
 
-import { LocalizedLabel, LocalizedLabelCurried, PrefixedLocalizedLabel } from './Greeting';
+import {
+  LocalizedLabel,
+  LocalizedLabelCurried,
+  PrefixedLocalizedLabel,
+  LocalizedLabelWithNamedParams,
+} from './Greeting';
 
 const translations = {
   'hello.world': 'Hello world',
+  'greeting.with.name': 'Hello Mr. {name}',
 };
 
 export default function App() {
@@ -18,6 +24,8 @@ export default function App() {
         <LocalizedLabelCurried />
 
         <PrefixedLocalizedLabel />
+
+        <LocalizedLabelWithNamedParams />
       </MessageSource.Provider>
     </React.Fragment>
   );
