@@ -1,6 +1,6 @@
 # react-message-source
 
-> A library which aids with I18n of React applications
+> A library which aids internationalization of React applications
 
 [![NPM](https://img.shields.io/npm/v/react-message-source.svg)](https://www.npmjs.com/package/react-message-source) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
@@ -15,6 +15,11 @@ yarn add react-message-source
 ## Usage
 
 ```jsx
+// translations.json
+{
+  "hello.world": "Hello World"
+}
+
 // in MyComponent.jsx
 import React from 'react'
 import { withMessages } from 'react-message-source'
@@ -25,9 +30,7 @@ function MyComponent(props) {
 }
 
 export default withMessages(MyComponent)
-```
 
-```jsx
 // in App.jsx
 import React, { Component } from 'react'
 
@@ -49,4 +52,4 @@ class App extends Component {
 
 ## License
 
-MIT © [](https://github.com/)
+MIT © [Netcetera AG](https://github.com/netceteragroup)
