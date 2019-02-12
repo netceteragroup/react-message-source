@@ -13,14 +13,41 @@ const MessageSourceContext = React.createContext(null);
  * Creates a HOC which passes the MessageSourceApi to the given Component.
  */
 function enhanceWithMessages(keyPrefix, WrappedComponent) {
+  const normalizedKeyPrefix = normalizeKeyPrefix(keyPrefix || '');
+  const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+
   /**
    * The enhancer HOC.
    */
   class Enhancer extends React.Component {
-    getMessage = (key, ...params) => getMessageWithParams(this.context, keyPrefix + key, ...params);
+    /**
+     * Retrieves a text message.
+     *
+     * Example usage:
+     * let name, lastName;
+     * ...
+     * const message = getMessage('message.key', name, lastName);
+     *
+     * @param key the key of the message.
+     * @param params an optional parameters (param0, param1 ...).
+     */
+    getMessage = (key, ...params) => getMessageWithParams(this.context, normalizedKeyPrefix + key, ...params);
 
+    /**
+     * Retrieves a text message with named parameters.
+     *
+     * Example usage:
+     * const parameters = {
+     *   name: 'John Doe',
+     * }
+     *
+     * const message = getMessageWithNamedParams('message.key', parameters)
+     *
+     * @param key the key of the message.
+     * @param namedParams a map of named parameters.
+     */
     getMessageWithNamedParams = (key, namedParams) =>
-      getMessageWithNamedParams(this.context, keyPrefix + key, namedParams);
+      getMessageWithNamedParams(this.context, normalizedKeyPrefix + key, namedParams);
 
     render() {
       return (
@@ -34,7 +61,7 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
   }
 
   Enhancer.contextType = MessageSourceContext;
-  Enhancer.displayName = `WithMessages(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
+  Enhancer.displayName = `WithMessages(${wrappedComponentName})`;
 
   return hoistNonReactStatics(Enhancer, WrappedComponent);
 }
@@ -45,12 +72,14 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
  * @param args the passed arguments ([Component] | [[keyPrefix], [Component]])
  */
 function internalWithMessages(...args) {
-  const [firstArg] = args;
-  if (firstArg == null || typeof firstArg === 'string') {
-    return enhanceWithMessages.bind(undefined, normalizeKeyPrefix(firstArg || ''));
+  const [keyPrefixOrComponent] = args;
+
+  if (keyPrefixOrComponent == null || typeof keyPrefixOrComponent === 'string') {
+    // consumer used the curried API
+    return enhanceWithMessages.bind(undefined, keyPrefixOrComponent);
   }
 
-  return enhanceWithMessages('', firstArg);
+  return enhanceWithMessages(null, keyPrefixOrComponent);
 }
 
 /**
@@ -78,7 +107,7 @@ export const withMessages = internalWithMessages;
  * Example usage:
  *
  * Exported just for convenience, in case you want to run propType checks on your component.
- * Note: some bundlers might remove these definitions.
+ * Note: some bundlers might remove these definitions during build time.
  */
 export const propTypes = {
   getMessage: PropTypes.func,
