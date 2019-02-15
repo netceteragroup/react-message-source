@@ -60,16 +60,15 @@ import translations from './translations.json'
 import MyComponent from './MyComponent'
 import MyOtherComponent from './MyOtherComponent'
 
-class App extends Component {
-  render () {
-    return (
-      <MessageSource.Provider value={translations}>
-        <MyComponent />
-        <MyOtherComponent />
-      </MessageSource.Provider>
-    )
-  }
+export default function App() {
+  return (
+    <MessageSource.Provider value={translations}>
+      <MyComponent />
+      <MyOtherComponent />
+    </MessageSource.Provider>
+  )
 }
+
 ```
 ## License
 
