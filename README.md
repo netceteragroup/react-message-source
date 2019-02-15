@@ -70,7 +70,7 @@ class App extends Component {
     )
   }
 }
-
+```
 ## License
 
 MIT © [Netcetera AG](https://github.com/netceteragroup)
