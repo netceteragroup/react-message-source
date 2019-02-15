@@ -3,6 +3,7 @@
 > A library which aids internationalization of React applications
 
 [![NPM](https://img.shields.io/npm/v/react-message-source.svg)](https://www.npmjs.com/package/react-message-source)
+[![Build Status](https://travis-ci.org/netceteragroup/react-message-source.svg?branch=master)](https://travis-ci.org/netceteragroup/react-message-source)
 
 ## Install
 
