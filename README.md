@@ -18,8 +18,8 @@ $ yarn add react-message-source
 // translations.json
 {
   "hello.world": "Hello World",
-  "userProfile.greeting": "Welcome {0}"
-  "userProfile.greeting.parameterized"
+  "userProfile.greeting": "Welcome {0}",
+  "userProfile.greeting.parameterized": "Welcome {userName}"
 }
 
 // in MyComponent.jsx
@@ -36,14 +36,18 @@ export default withMessages(MyComponent)
 
 // in MyOtherComponent.jsx
 function MyOtherComponent(props) {
- const { getMessage } = props;
- return <span>{getMessage('hello.world')}</span>
+  const { getMessageWithNamedParams } = props;
+  // 'userProfile' prefix is implicit -> actual text lookup key is 'userProfile.greeting.parameterized'
+  const greeting = getMessageWithNamedParams('greeting.parameterized', {
+    userName: 'John Doe',
+  })
+  return <span>{greeting}</span>
 }
 
 // sometimes you might like to scope the text keys and avoid repeating the common key segments
 // in that case, you can use the curried version
 export default compose(
-  withMessages('hello'),
+  withMessages('userProfile'),
 )(MyOtherComponent)
 
 // in App.jsx
