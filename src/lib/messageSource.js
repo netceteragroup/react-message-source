@@ -32,7 +32,15 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
      * @param key the key of the message.
      * @param params an optional parameters (param0, param1 ...).
      */
-    getMessage = (key, ...params) => getMessageWithParams(this.context, normalizedKeyPrefix + key, ...params);
+    getMessage = (key, ...params) => {
+      const textKey = normalizedKeyPrefix + key;
+      const message = getMessageWithParams(this.context, textKey, ...params);
+      if (message === textKey) {
+        return getMessageWithParams(this.context, key, ...params);
+      }
+
+      return message;
+    };
 
     /**
      * Retrieves a text message with named parameters.
@@ -47,8 +55,15 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
      * @param key the key of the message.
      * @param namedParams a map of named parameters.
      */
-    getMessageWithNamedParams = (key, namedParams) =>
-      getMessageWithNamedParams(this.context, normalizedKeyPrefix + key, namedParams);
+    getMessageWithNamedParams = (key, namedParams) => {
+      const textKey = normalizedKeyPrefix + key;
+      const message = getMessageWithNamedParams(this.context, textKey, namedParams)
+      if (message === textKey) {
+        return getMessageWithNamedParams(this.context, key, namedParams);
+      }
+
+      return message;
+    };
 
     render() {
       if (process.env.NODE_ENV !== 'production') {

@@ -7,6 +7,7 @@ import * as MessageSource from './messageSource';
 describe('MessageSource', () => {
   const translations = {
     'hello.world': 'Hello World',
+    'greeting.normal': 'Hi',
     'greeting.named': 'Hello {name}',
   };
 
@@ -102,6 +103,32 @@ describe('MessageSource', () => {
     const nestedComponentInstance = root.findByType(Nested);
 
     expect(nestedComponentInstance.children[0]).toBe('Hello World');
+  });
+
+  it('[curried] retrieves the correct translated value in mixed mode', () => {
+    function Nested(props) {
+      const { getMessage } = props;
+      return (
+        <React.Fragment>
+          {getMessage('world')}
+          {getMessage('greeting.normal')}
+        </React.Fragment>
+      );
+    }
+
+    const NestedHOC = MessageSource.withMessages('hello')(Nested);
+
+    const renderer = TestRenderer.create(
+      <MessageSource.Provider value={translations}>
+        <NestedHOC />
+      </MessageSource.Provider>,
+    );
+
+    const { root } = renderer;
+    const nestedComponentInstance = root.findByType(Nested);
+
+    expect(nestedComponentInstance.children[0]).toBe('Hello World');
+    expect(nestedComponentInstance.children[1]).toBe('Hi');
   });
 
   it('supports nested overrides', () => {
