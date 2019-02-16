@@ -9,6 +9,7 @@ import { normalizeKeyPrefix } from './utils';
  * A React Context which holds the translations map.
  */
 const MessageSourceContext = React.createContext(null);
+MessageSourceContext.displayName = 'MessageSourceContext';
 
 /**
  * Creates a HOC which passes the MessageSourceApi to the given Component.
