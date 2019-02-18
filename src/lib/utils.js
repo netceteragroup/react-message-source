@@ -5,7 +5,7 @@
  * @param suffix the suffix to check.
  * @return {boolean}
  */
-const endsWith = (str, suffix) => str.indexOf(suffix, str.length - suffix.length) === 0;
+const endsWith = (str, suffix) => str.indexOf(suffix, str.length - suffix.length) >= 0;
 
 /**
  * Normalizes the given keyPrefix to a defined format.
