@@ -2,6 +2,7 @@
   "name": "react-message-source",
   "version": "0.1.0",
   "description": "A library which aids with i18n of React applications",
+  "keywords": ["intl", "i18n", "react intl", "messages", "translate"],
   "author": "Netcetera AG",
   "license": "MIT",
   "repository": "https://github.com/netceteragroup/react-message-source",
