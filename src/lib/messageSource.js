@@ -58,7 +58,7 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
      */
     getMessageWithNamedParams = (key, namedParams) => {
       const textKey = normalizedKeyPrefix + key;
-      const message = getMessageWithNamedParams(this.context, textKey, namedParams)
+      const message = getMessageWithNamedParams(this.context, textKey, namedParams);
       if (message === textKey) {
         return getMessageWithNamedParams(this.context, key, namedParams);
       }
@@ -102,11 +102,9 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
 /**
  * An internal implementation of the argument resolution logic.
  *
- * @param args the passed arguments ([Component] | [[keyPrefix], [Component]])
+ * @param keyPrefixOrComponent the passed argument ([Component] | [[keyPrefix], [Component]])
  */
-function internalWithMessages(...args) {
-  const [keyPrefixOrComponent] = args;
-
+function internalWithMessages(keyPrefixOrComponent) {
   if (keyPrefixOrComponent == null || typeof keyPrefixOrComponent === 'string') {
     // consumer used the curried API
     return enhanceWithMessages.bind(undefined, keyPrefixOrComponent);
