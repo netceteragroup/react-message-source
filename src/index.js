@@ -1,4 +1,5 @@
 /**
  * The Public API.
  */
-export * from './lib/messageSource';
+export { Provider, withMessages, propTypes } from './lib/messageSource';
+export { FetchingProvider } from './lib/FetchingProvider';
