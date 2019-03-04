@@ -2,7 +2,7 @@
   "name": "react-message-source",
   "version": "0.1.0",
   "description": "A library which aids with i18n of React applications",
-  "author": "",
+  "author": "Netcetera AG",
   "license": "MIT",
   "repository": "https://github.com/netceteragroup/react-message-source",
   "main": "dist/index.js",
@@ -26,8 +26,7 @@
   },
   "peerDependencies": {
     "prop-types": "^15.5.10",
-    "react": "^16.6.0",
-    "react-dom": "^16.6.0"
+    "react": "^16.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
