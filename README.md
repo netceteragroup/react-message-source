@@ -49,24 +49,29 @@ Creates a higher order component and provides the [ComponentAPI](#ComponentAPI) 
 
 ##### `withMessages(Component)`
 Wraps the given `Component` and passes down the [ComponentAPI](#ComponentAPI).
+```js
+export default withMessages(MyComponent)
+```
 
 ##### `withMessages(keyPrefix?: string)(Component)`
 Similar like the example above, but in a curried format. Useful when decorating a `Component` with many higher order components:
 ```js
-compose(
+export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   withRouter,
   withMessages,
-)(Component)
+)(MyComponent)
 ```
 Additionally, the curried form of `withMessages` accepts an optional `keyPefix` which will be prepended before any translation lookup key (see the examples below). This feature comes quite useful when i18n-ing scoped presentational components.
-
 ```js
-compose(
+export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   withRouter,
   withMessages('app.screens.userProfile'), // scoped lookup
-)(Component)
+)(MyComponent)
+
+// alternatively
+export default withMessages('app.screens.userProfile')(MyComponent)
 ```
 
 ## `ComponentAPI`
