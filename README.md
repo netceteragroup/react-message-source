@@ -125,8 +125,6 @@ export default function App() {
 import React, { Component } from 'react'
 import * as MessageSource from 'react-message-source'
 
-import translations from './translations.json'
-
 import MyComponent from './MyComponent'
 import MyComponentWithIndexedParams from './MyComponentWithIndexedParams'
 import MyComponentWithNamedParams from './MyComponentWithNamedParams'
