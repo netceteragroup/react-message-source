@@ -15,7 +15,7 @@ $ yarn add react-message-source
 
 # API
 ## `Provider`
-A `<Proivider />` component which purpose is to provide the translations down the component tree.
+A `<Provider />` component which purpose is to provide the translations down the component tree.
 
 ##### `value: { [key: string]: string }`
 Sets the current translations.
