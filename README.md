@@ -4,6 +4,7 @@
 
 [![NPM](https://img.shields.io/npm/v/react-message-source.svg)](https://www.npmjs.com/package/react-message-source)
 [![Build Status](https://travis-ci.org/netceteragroup/react-message-source.svg?branch=master)](https://travis-ci.org/netceteragroup/react-message-source)
+[![Coverage Status](https://coveralls.io/repos/github/netceteragroup/react-message-source/badge.svg?branch=master)](https://coveralls.io/github/netceteragroup/react-message-source?branch=master)
 
 # Install
 
@@ -170,12 +171,12 @@ export default withMessages(MyComponent)
 ```jsx
 function MyComponentWithNamedParams(props) {
   const { getMessageWithNamedParams } = props;
-  
+
   // 'app.screen.userProfile' prefix is implicit here
   const greeting = getMessageWithNamedParams('greeting.parameterized', {
     userName: 'John Doe',
   })
-  
+
   return <span>{greeting}</span>
 }
 

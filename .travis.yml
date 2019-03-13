@@ -6,5 +6,8 @@ node_js:
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
 
+script:
+  - yarn coverage
+
 cache:
   yarn: true
