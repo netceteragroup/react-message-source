@@ -2,100 +2,37 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import invariant from 'invariant';
 import hoistNonReactStatics from 'hoist-non-react-statics';
-import { getMessageWithNamedParams, getMessageWithParams } from './messages';
-import { normalizeKeyPrefix } from './utils';
-
-/**
- * A React Context which holds the translations map.
- */
-const MessageSourceContext = React.createContext(null);
-MessageSourceContext.displayName = 'MessageSourceContext';
+import { useMessageSource } from './useMessageSource';
 
 /**
  * Creates a HOC which passes the MessageSourceApi to the given Component.
  */
 function enhanceWithMessages(keyPrefix, WrappedComponent) {
-  const normalizedKeyPrefix = normalizeKeyPrefix(keyPrefix || '');
   const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
   /**
    * The enhancer HOC.
    */
-  class Enhancer extends React.Component {
-    /**
-     * Retrieves a text message.
-     *
-     * Example usage:
-     * let name, lastName;
-     * ...
-     * const message = getMessage('message.key', name, lastName);
-     *
-     * @param key the key of the message.
-     * @param params an optional parameters (param0, param1 ...).
-     */
-    getMessage = (key, ...params) => {
-      const textKey = normalizedKeyPrefix + key;
-      const message = getMessageWithParams(this.context, textKey, ...params);
-      if (message === textKey) {
-        return getMessageWithParams(this.context, key, ...params);
-      }
+  function Enhancer(props) {
+    const messageSourceApi = useMessageSource(keyPrefix);
+    if (process.env.NODE_ENV !== 'production') {
+      const hasOwn = Object.prototype.hasOwnProperty;
+      const propsToOverwrite = Object.keys(messageSourceApi)
+        .filter(propToCheck => hasOwn.call(props, propToCheck))
+        .join(', ');
 
-      return message;
-    };
-
-    /**
-     * Retrieves a text message with named parameters.
-     *
-     * Example usage:
-     * const parameters = {
-     *   name: 'John Doe',
-     * }
-     *
-     * const message = getMessageWithNamedParams('message.key', parameters)
-     *
-     * @param key the key of the message.
-     * @param namedParams a map of named parameters.
-     */
-    getMessageWithNamedParams = (key, namedParams) => {
-      const textKey = normalizedKeyPrefix + key;
-      const message = getMessageWithNamedParams(this.context, textKey, namedParams);
-      if (message === textKey) {
-        return getMessageWithNamedParams(this.context, key, namedParams);
-      }
-
-      return message;
-    };
-
-    render() {
-      if (process.env.NODE_ENV !== 'production') {
-        /* eslint-disable react/prop-types */
-        invariant(
-          !this.props.getMessage,
-          `[react-message-source]: [%s] already has a prop named [getMessage]. It will be overwritten.`,
-          wrappedComponentName,
-        );
-
-        invariant(
-          !this.props.getMessageWithNamedParams,
-          `[react-message-source]: [%s] already has a prop named [getMessageWithNamedParams]. It will be overwritten.`,
-          wrappedComponentName,
-        );
-        /* eslint-enable react/prop-types */
-      }
-
-      return (
-        <WrappedComponent
-          {...this.props}
-          getMessage={this.getMessage}
-          getMessageWithNamedParams={this.getMessageWithNamedParams}
-        />
+      invariant(
+        !propsToOverwrite,
+        `[react-message-source]: [%s] already has props named [%s]. They will be overwritten.`,
+        wrappedComponentName,
+        propsToOverwrite,
       );
     }
+
+    return <WrappedComponent {...props} {...messageSourceApi} />;
   }
 
-  Enhancer.contextType = MessageSourceContext;
   Enhancer.displayName = `WithMessages(${wrappedComponentName})`;
-
   return hoistNonReactStatics(Enhancer, WrappedComponent);
 }
 
@@ -112,17 +49,6 @@ function internalWithMessages(keyPrefixOrComponent) {
 
   return enhanceWithMessages(null, keyPrefixOrComponent);
 }
-
-/**
- * Example usage:
- *
- * const translations = await fetch('/api/rest/texts?lang=en');
- * <MessageSource.Provider value={translations}>
- *   <SomeOtherComponent />
- *   ...
- * </MessageSource.Provider>
- */
-export const { Provider } = MessageSourceContext;
 
 /**
  * Example usages:

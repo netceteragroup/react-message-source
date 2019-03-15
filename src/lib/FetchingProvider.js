@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Provider } from './messageSource';
+import { Provider } from './MessageSourceContext';
 
 const identity = x => x;
 

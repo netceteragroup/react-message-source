@@ -1,10 +1,11 @@
 import React from 'react';
 import TestRenderer from 'react-test-renderer';
+import { Provider as MessageSourceProvider } from './MessageSourceContext';
 import * as MessageSource from './messageSource';
 
 /* eslint-disable react/prop-types */
 
-describe('MessageSource', () => {
+describe('withMessages', () => {
   const translations = {
     'hello.world': 'Hello World',
     'greeting.normal': 'Hi',
@@ -34,9 +35,9 @@ describe('MessageSource', () => {
     const NestedHOC = MessageSource.withMessages(Nested);
 
     const renderer = TestRenderer.create(
-      <MessageSource.Provider value={translations}>
+      <MessageSourceProvider value={translations}>
         <NestedHOC />
-      </MessageSource.Provider>,
+      </MessageSourceProvider>,
     );
 
     const { root } = renderer;
@@ -54,9 +55,9 @@ describe('MessageSource', () => {
     const NestedHOC = MessageSource.withMessages(Nested);
 
     const renderer = TestRenderer.create(
-      <MessageSource.Provider value={translations}>
+      <MessageSourceProvider value={translations}>
         <NestedHOC />
-      </MessageSource.Provider>,
+      </MessageSourceProvider>,
     );
 
     const { root } = renderer;
@@ -74,9 +75,9 @@ describe('MessageSource', () => {
     const NestedHOC = MessageSource.withMessages()(Nested);
 
     const renderer = TestRenderer.create(
-      <MessageSource.Provider value={translations}>
+      <MessageSourceProvider value={translations}>
         <NestedHOC />
-      </MessageSource.Provider>,
+      </MessageSourceProvider>,
     );
 
     const { root } = renderer;
@@ -94,9 +95,9 @@ describe('MessageSource', () => {
     const NestedHOC = MessageSource.withMessages('hello')(Nested);
 
     const renderer = TestRenderer.create(
-      <MessageSource.Provider value={translations}>
+      <MessageSourceProvider value={translations}>
         <NestedHOC />
-      </MessageSource.Provider>,
+      </MessageSourceProvider>,
     );
 
     const { root } = renderer;
@@ -119,9 +120,9 @@ describe('MessageSource', () => {
     const NestedHOC = MessageSource.withMessages('hello')(Nested);
 
     const renderer = TestRenderer.create(
-      <MessageSource.Provider value={translations}>
+      <MessageSourceProvider value={translations}>
         <NestedHOC />
-      </MessageSource.Provider>,
+      </MessageSourceProvider>,
     );
 
     const { root } = renderer;
@@ -148,12 +149,12 @@ describe('MessageSource', () => {
     const NestedHOC = MessageSource.withMessages()(Nested);
 
     const renderer = TestRenderer.create(
-      <MessageSource.Provider value={levelOne}>
+      <MessageSourceProvider value={levelOne}>
         <NestedHOC />
-        <MessageSource.Provider value={levelTwo}>
+        <MessageSourceProvider value={levelTwo}>
           <NestedHOC />
-        </MessageSource.Provider>
-      </MessageSource.Provider>,
+        </MessageSourceProvider>
+      </MessageSourceProvider>,
     );
 
     const components = renderer.root.findAllByType(Nested);
