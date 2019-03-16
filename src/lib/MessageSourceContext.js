@@ -25,4 +25,4 @@ export { MessageSourceContext };
  *   ...
  * </MessageSource.Provider>
  */
-export const { Provider } = MessageSourceContext;
+export const { Provider, Consumer } = MessageSourceContext;
