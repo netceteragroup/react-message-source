@@ -1,9 +1,8 @@
 import React from 'react';
 import TestRenderer from 'react-test-renderer';
 import { Provider as MessageSourceProvider } from './MessageSourceContext';
-import * as MessageSource from './messageSource';
-
-/* eslint-disable react/prop-types */
+import * as MessageSource from './withMessages';
+import { propTypes as MessageSourceApi } from './propTypes';
 
 describe('withMessages', () => {
   const translations = {
@@ -20,8 +19,9 @@ describe('withMessages', () => {
     const { root } = renderer;
 
     const captorInstance = root.findByType(PropsCaptor);
-    expect(captorInstance.props.getMessage).toBeDefined();
-    expect(captorInstance.props.getMessageWithNamedParams).toBeDefined();
+    Object.keys(MessageSourceApi).forEach(api => {
+      expect(captorInstance.props[api]).toBeDefined();
+    });
   });
 
   it('retrieves the correct translated value with named parameters', () => {
@@ -108,7 +108,7 @@ describe('withMessages', () => {
 
   it('[curried] retrieves the correct translated value in mixed mode', () => {
     function Nested(props) {
-      const { getMessage } = props;
+      const { getMessage } = props; // eslint-disable-line react/prop-types
       return (
         <React.Fragment>
           {getMessage('world')}
@@ -163,10 +163,5 @@ describe('withMessages', () => {
     const [levelOneComponent, levelTwoComponent] = components;
     expect(levelOneComponent.children[0]).toBe('Hello World');
     expect(levelTwoComponent.children[0]).toBe('Hallo Welt');
-  });
-
-  it('propTypes are exported', () => {
-    // eslint-disable-next-line react/forbid-foreign-prop-types
-    expect(MessageSource.propTypes).toBeDefined();
   });
 });

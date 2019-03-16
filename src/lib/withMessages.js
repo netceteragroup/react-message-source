@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import invariant from 'invariant';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { useMessageSource } from './useMessageSource';
@@ -59,14 +58,3 @@ function internalWithMessages(keyPrefixOrComponent) {
  * 4. compose(MessageSource.withMessages)(Component)
  */
 export const withMessages = internalWithMessages;
-
-/**
- * Example usage:
- *
- * Exported just for convenience, in case you want to run propType checks on your component.
- * Note: some bundlers might remove these definitions during build time.
- */
-export const propTypes = {
-  getMessage: PropTypes.func,
-  getMessageWithNamedParams: PropTypes.func,
-};
