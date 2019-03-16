@@ -70,9 +70,17 @@ describe('FetchingProvider', () => {
     const { getByText, rerender } = RTL.render(<TestComponent url="http://any.uri/texts?lang=en" />);
     await RTL.waitForElement(() => getByText('Hello world'));
 
-    rerender(<TestComponent url="http://any.uri/texts?lang=de" />);
+    RTL.act(() => {
+      rerender(<TestComponent url="http://any.uri/texts?lang=de" />);
+    });
 
-    await RTL.waitForElement(() => getByText('Hello world'));
+    await RTL.wait(
+      () =>
+        new Promise(resolve => {
+          // simulate network request
+          setTimeout(() => resolve(), 300);
+        }),
+    );
 
     expect(global.fetch).toHaveBeenCalledTimes(2);
     expect(transform).toHaveBeenCalledTimes(2);
