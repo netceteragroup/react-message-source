@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import TestRenderer from 'react-test-renderer';
 import { Provider as MessageSourceProvider } from './MessageSourceContext';
 import * as MessageSource from './withMessages';
@@ -163,5 +163,43 @@ describe('withMessages', () => {
     const [levelOneComponent, levelTwoComponent] = components;
     expect(levelOneComponent.children[0]).toBe('Hello World');
     expect(levelTwoComponent.children[0]).toBe('Hallo Welt');
+  });
+
+  it('supports ref forwarding', () => {
+    const NestedHOC = MessageSource.withMessages('hello')(
+      class Nested extends Component {
+        myMethod = () => {
+          return 100;
+        };
+
+        render() {
+          const { getMessageWithNamedParams } = this.props; // eslint-disable-line react/prop-types
+          return <React.Fragment>{getMessageWithNamedParams('hello.world')}</React.Fragment>;
+        }
+      },
+    );
+
+    // eslint-disable-next-line react/no-multi-comp
+    class MyFwRefComponent extends Component {
+      nestedRef = React.createRef();
+
+      render() {
+        return <NestedHOC ref={this.nestedRef} />;
+      }
+    }
+
+    const renderer = TestRenderer.create(
+      <MessageSourceProvider value={translations}>
+        <MyFwRefComponent />
+      </MessageSourceProvider>,
+    );
+
+    const { root } = renderer;
+    const fwRefCompInstance = root.findByType(MyFwRefComponent);
+
+    expect(fwRefCompInstance.instance).toBeDefined();
+    expect(fwRefCompInstance.instance.nestedRef.current).toBeDefined();
+    expect(fwRefCompInstance.instance.nestedRef.current.myMethod).toBeDefined();
+    expect(fwRefCompInstance.instance.nestedRef.current.myMethod()).toBe(100);
   });
 });

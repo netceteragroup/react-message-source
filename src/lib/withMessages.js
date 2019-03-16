@@ -12,7 +12,7 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
   /**
    * The enhancer HOC.
    */
-  function Enhancer(props) {
+  function WithMessages(props) {
     const messageSourceApi = useMessageSource(keyPrefix);
     if (process.env.NODE_ENV !== 'production') {
       const hasOwn = Object.prototype.hasOwnProperty;
@@ -28,11 +28,17 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
       );
     }
 
-    return <WrappedComponent {...props} {...messageSourceApi} />;
+    // eslint-disable-next-line react/prop-types
+    const { forwardedRef, ...rest } = props;
+    return <WrappedComponent {...rest} {...messageSourceApi} ref={forwardedRef} />;
   }
 
-  Enhancer.displayName = `WithMessages(${wrappedComponentName})`;
-  return hoistNonReactStatics(Enhancer, WrappedComponent);
+  WithMessages.displayName = `WithMessages(${wrappedComponentName})`;
+
+  return hoistNonReactStatics(
+    React.forwardRef((props, ref) => <WithMessages {...props} forwardedRef={ref} />),
+    WrappedComponent,
+  );
 }
 
 /**
