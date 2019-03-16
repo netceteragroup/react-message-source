@@ -45,6 +45,19 @@ An optional fetching lifecycle method. Invoked just after `GET /props.url` respo
 ##### `onFetchingError?: (e?: Error) => void`
 An optional fetching lifecycle method. Invoked when error occurs during fetching/processing stage.
 
+## `useMessageSource(keyPrefix?: string): ComponentAPI`
+A React Hook version of the [ComponentAPI](#ComponentApi).
+
+```js
+import React from 'react'
+import { useMessageSource } from 'react-message-source'
+
+function MyComponent() {
+  const { getMessage, getMessageWithNamedParams } = useMessageSource()
+  return ...
+}
+```
+
 ## `withMessages`
 Creates a higher order component and provides the [ComponentAPI](#ComponentAPI) as `props`. It can be used in two ways:
 
@@ -102,7 +115,7 @@ Exposes the [ComponentAPI](#ComponentApi) as standard `prop-types` definition.
 #### `App.jsx`
 ```jsx
 import React, { Component } from 'react'
-import * as MessageSource from 'react-message-source'
+import { Provider as MessageSourceProvider } from 'react-message-source'
 
 import translations from './translations.json'
 
@@ -112,11 +125,12 @@ import MyComponentWithNamedParams from './MyComponentWithNamedParams'
 
 export default function App() {
   return (
-    <MessageSource.Provider value={translations}>
+    <MessageSourceProvider value={translations}>
       <MyComponent />
+      <MyComponentWithHooks />
       <MyComponentWithIndexedParams />
       <MyComponentWithNamedParams />
-    </MessageSource.Provider>
+    </MessageSourceProvider>
   )
 }
 ```
@@ -124,7 +138,7 @@ export default function App() {
 #### `FetchApp.jsx`
 ```jsx
 import React, { Component } from 'react'
-import * as MessageSource from 'react-message-source'
+import { FetchingProvider as FetchingMessageSourceProvider } from 'react-message-source'
 
 import MyComponent from './MyComponent'
 import MyComponentWithIndexedParams from './MyComponentWithIndexedParams'
@@ -132,11 +146,12 @@ import MyComponentWithNamedParams from './MyComponentWithNamedParams'
 
 export default function FetchApp() {
   return (
-    <MessageSource.FetchingProvider url="http://api.myapp.com/intl?lang=en">
+    <FetchingMessageSourceProvider url="http://api.myapp.com/intl?lang=en">
       <MyComponent />
+      <MyComponentWithHooks />
       <MyComponentWithIndexedParams />
       <MyComponentWithNamedParams />
-    </MessageSource.FetchingProvider>
+    </FetchingMessageSourceProvider>
   )
 }
 ```
@@ -152,6 +167,17 @@ function MyComponent(props) {
 }
 
 export default withMessages(MyComponent)
+```
+
+#### `MyComponentWithHooks.jsx`
+```jsx
+import React from 'react'
+import { useMessageSource } from 'react-message-source'
+
+export default function MyComponent(props) {
+  const { getMessage } = useMessageSource();
+  return <span>{getMessage('hello.world')}</span>
+}
 ```
 
 #### `MyComponentWithIndexedParams.jsx`
@@ -187,4 +213,4 @@ export default compose(
 
 ## License
 
-MIT © [Netcetera AG](https://github.com/netceteragroup)
+MIT © [Netcetera](https://github.com/netceteragroup)

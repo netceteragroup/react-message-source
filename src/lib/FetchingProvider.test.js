@@ -1,10 +1,13 @@
 import React from 'react';
 import * as RTL from 'react-testing-library';
 import { FetchingProvider } from './FetchingProvider';
-import { withMessages } from './messageSource';
+import { useMessageSource } from './useMessageSource';
 
 describe('FetchingProvider', () => {
-  const Spy = withMessages(props => props.getMessage('hello.world'));
+  const Spy = () => {
+    const { getMessage } = useMessageSource();
+    return getMessage('hello.world');
+  };
 
   beforeEach(() => {
     // mock impl of fetch() API
@@ -48,10 +51,17 @@ describe('FetchingProvider', () => {
   });
 
   it('fetches text resources when url prop changes', async () => {
+    const transform = jest.fn(x => x);
+    const onFetchingStart = jest.fn();
+    const onFetchingEnd = jest.fn();
     function TestComponent(props) {
       return (
-        // eslint-disable-next-line react/prop-types
-        <FetchingProvider url={props.url}>
+        <FetchingProvider
+          url={props.url} // eslint-disable-line react/prop-types
+          transform={transform}
+          onFetchingStart={onFetchingStart}
+          onFetchingEnd={onFetchingEnd}
+        >
           <Spy />
         </FetchingProvider>
       );
@@ -60,9 +70,22 @@ describe('FetchingProvider', () => {
     const { getByText, rerender } = RTL.render(<TestComponent url="http://any.uri/texts?lang=en" />);
     await RTL.waitForElement(() => getByText('Hello world'));
 
-    rerender(<TestComponent url="http://any.uri/texts?lang=de" />);
+    RTL.act(() => {
+      rerender(<TestComponent url="http://any.uri/texts?lang=de" />);
+    });
+
+    await RTL.wait(
+      () =>
+        new Promise(resolve => {
+          // simulate network request
+          setTimeout(() => resolve(), 300);
+        }),
+    );
 
     expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(transform).toHaveBeenCalledTimes(2);
+    expect(onFetchingStart).toHaveBeenCalledTimes(2);
+    expect(onFetchingEnd).toHaveBeenCalledTimes(2);
   });
 
   it('invokes onFetchingError lifecycle on network failure', async () => {

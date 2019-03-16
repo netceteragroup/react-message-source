@@ -1,6 +1,7 @@
 import React from 'react';
-import * as MessageSource from 'react-message-source';
+import { Provider as MessageSourceProvider } from 'react-message-source';
 
+import Hooks from './Hooks';
 import {
   LocalizedLabel,
   LocalizedLabelCurried,
@@ -18,15 +19,13 @@ export default function App() {
     <React.Fragment>
       <p>The content below is localized, see Greeting.js for more information.</p>
 
-      <MessageSource.Provider value={translations}>
+      <MessageSourceProvider value={translations}>
         <LocalizedLabel />
-
         <LocalizedLabelCurried />
-
         <PrefixedLocalizedLabel />
-
         <LocalizedLabelWithNamedParams />
-      </MessageSource.Provider>
+        <Hooks />
+      </MessageSourceProvider>
     </React.Fragment>
   );
 }
