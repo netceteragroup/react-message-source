@@ -15,6 +15,7 @@
   "main": "dist/react-message-source.js",
   "module": "dist/react-message-source.es.js",
   "jsnext:main": "dist/react-message-source.es.js",
+  "typings": "dist/index.d.ts",
   "engines": {
     "node": ">=8",
     "npm": ">=5"
