@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import TestRenderer from 'react-test-renderer';
 import { Provider as MessageSourceProvider } from './MessageSourceContext';
 import * as MessageSource from './withMessages';
-import { propTypes as MessageSourceApi } from './propTypes';
+import { propTypes as MessageSourcePropsApi } from './propTypes';
+import { MessageSourceApi } from './useMessageSource';
 
 describe('withMessages', () => {
   const translations = {
@@ -19,7 +20,7 @@ describe('withMessages', () => {
     const { root } = renderer;
 
     const captorInstance = root.findByType(PropsCaptor);
-    Object.keys(MessageSourceApi).forEach(api => {
+    Object.keys(MessageSourcePropsApi).forEach(api => {
       expect(captorInstance.props[api]).toBeDefined();
     });
   });
@@ -167,20 +168,20 @@ describe('withMessages', () => {
 
   it('supports ref forwarding', () => {
     const NestedHOC = MessageSource.withMessages('hello')(
-      class Nested extends Component {
+      class Nested extends React.Component<MessageSourceApi> {
         myMethod = () => {
           return 100;
         };
 
         render() {
-          const { getMessageWithNamedParams } = this.props; // eslint-disable-line react/prop-types
-          return <React.Fragment>{getMessageWithNamedParams('hello.world')}</React.Fragment>;
+          const { getMessageWithNamedParams } = this.props;
+          return <>{getMessageWithNamedParams('hello.world', {})}</>;
         }
       },
     );
 
     // eslint-disable-next-line react/no-multi-comp
-    class MyFwRefComponent extends Component {
+    class MyFwRefComponent extends React.Component {
       nestedRef = React.createRef();
 
       render() {

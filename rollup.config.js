@@ -1,4 +1,4 @@
-import babel from 'rollup-plugin-babel';
+import typescript from 'rollup-plugin-typescript2';
 import commonjs from 'rollup-plugin-commonjs';
 import external from 'rollup-plugin-peer-deps-external';
 import resolve from 'rollup-plugin-node-resolve';
@@ -6,23 +6,28 @@ import resolve from 'rollup-plugin-node-resolve';
 import pkg from './package.json';
 
 module.exports = {
-  input: 'src/index.js',
+  input: 'src/index.ts',
   output: [
     {
       file: pkg.main,
       format: 'cjs',
-      sourcemap: true,
+      exports: 'named',
+      sourcemap: true
     },
     {
       file: pkg.module,
       format: 'es',
-      sourcemap: true,
-    },
+      exports: 'named',
+      sourcemap: true
+    }
   ],
   plugins: [
     external(),
-    babel(),
     resolve(),
+    typescript({
+      rollupCommonJSResolveHack: true,
+      clean: true,
+    }),
     commonjs()
-  ].filter(Boolean),
+  ],
 };

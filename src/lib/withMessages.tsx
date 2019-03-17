@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import invariant from 'invariant';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { useMessageSource } from './useMessageSource';
@@ -6,13 +6,10 @@ import { useMessageSource } from './useMessageSource';
 /**
  * Creates a HOC which passes the MessageSourceApi to the given Component.
  */
-function enhanceWithMessages(keyPrefix, WrappedComponent) {
+function enhanceWithMessages(keyPrefix: string | undefined, WrappedComponent: React.ComponentType<any>) {
   const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
-  /**
-   * The enhancer HOC.
-   */
-  function WithMessages(props) {
+  function WithMessages(props: any) {
     const messageSourceApi = useMessageSource(keyPrefix);
     if (process.env.NODE_ENV !== 'production') {
       const hasOwn = Object.prototype.hasOwnProperty;
@@ -28,7 +25,6 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
       );
     }
 
-    // eslint-disable-next-line react/prop-types
     const { forwardedRef, ...rest } = props;
     return <WrappedComponent {...rest} {...messageSourceApi} ref={forwardedRef} />;
   }
@@ -46,13 +42,13 @@ function enhanceWithMessages(keyPrefix, WrappedComponent) {
  *
  * @param keyPrefixOrComponent the passed argument ([Component] | [[keyPrefix], [Component]])
  */
-function internalWithMessages(keyPrefixOrComponent) {
+function internalWithMessages(keyPrefixOrComponent?: string | React.ComponentType<any>) {
   if (keyPrefixOrComponent == null || typeof keyPrefixOrComponent === 'string') {
     // consumer used the curried API
     return enhanceWithMessages.bind(undefined, keyPrefixOrComponent);
   }
 
-  return enhanceWithMessages(null, keyPrefixOrComponent);
+  return enhanceWithMessages(undefined, keyPrefixOrComponent);
 }
 
 /**
