@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import TestRenderer from 'react-test-renderer';
 import { useMessageSource } from './useMessageSource';
 import { Provider as MessageSourceProvider } from './MessageSourceContext';
@@ -31,9 +31,13 @@ describe('useMessageSource', () => {
   it('retrieves the correct translated value with named parameters', () => {
     function Nested() {
       const { getMessageWithNamedParams } = useMessageSource();
-      return getMessageWithNamedParams('greeting.named', {
-        name: 'John Doe',
-      });
+      return (
+        <>
+          {getMessageWithNamedParams('greeting.named', {
+            name: 'John Doe',
+          })}
+        </>
+      );
     }
 
     const renderer = TestRenderer.create(
@@ -51,7 +55,7 @@ describe('useMessageSource', () => {
   it('retrieves the correct translated value with prefix', () => {
     function Nested() {
       const { getMessage } = useMessageSource('hello');
-      return getMessage('world');
+      return <>{getMessage('world')}</>;
     }
 
     const renderer = TestRenderer.create(
@@ -69,7 +73,7 @@ describe('useMessageSource', () => {
   it('retrieves the correct translated value without prefix', () => {
     function Nested() {
       const { getMessage } = useMessageSource();
-      return getMessage('hello.world');
+      return <>{getMessage('hello.world')}</>;
     }
 
     const renderer = TestRenderer.create(

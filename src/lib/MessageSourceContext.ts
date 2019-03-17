@@ -1,4 +1,8 @@
-import React from 'react';
+import * as React from 'react';
+
+export type MessageSourceContextShape = {
+  [key: string]: string,
+};
 
 /**
  * Initial Context value, an empty object.
@@ -8,7 +12,7 @@ const empty = {};
 /**
  * A React Context which holds the translations map.
  */
-const MessageSourceContext = React.createContext(empty);
+const MessageSourceContext = React.createContext<MessageSourceContextShape>(empty);
 MessageSourceContext.displayName = 'MessageSourceContext';
 
 /**

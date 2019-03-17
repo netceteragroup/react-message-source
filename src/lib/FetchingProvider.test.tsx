@@ -1,16 +1,17 @@
-import React from 'react';
+import * as React from 'react';
 import * as RTL from 'react-testing-library';
 import { FetchingProvider } from './FetchingProvider';
 import { useMessageSource } from './useMessageSource';
 
 describe('FetchingProvider', () => {
-  const Spy = () => {
+  function Spy() {
     const { getMessage } = useMessageSource();
-    return getMessage('hello.world');
-  };
+    return <span>{getMessage('hello.world')}</span>;
+  }
 
   beforeEach(() => {
     // mock impl of fetch() API
+    // @ts-ignore
     global.fetch = jest.fn(() =>
       Promise.resolve({
         json: () =>
@@ -47,6 +48,7 @@ describe('FetchingProvider', () => {
     expect(transform).toHaveBeenCalled();
     expect(onFetchingStart).toHaveBeenCalled();
     expect(onFetchingEnd).toHaveBeenCalled();
+    // @ts-ignore
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
@@ -54,7 +56,7 @@ describe('FetchingProvider', () => {
     const transform = jest.fn(x => x);
     const onFetchingStart = jest.fn();
     const onFetchingEnd = jest.fn();
-    function TestComponent(props) {
+    function TestComponent(props: { url: string }) {
       return (
         <FetchingProvider
           url={props.url} // eslint-disable-line react/prop-types
@@ -82,6 +84,7 @@ describe('FetchingProvider', () => {
         }),
     );
 
+    // @ts-ignore
     expect(global.fetch).toHaveBeenCalledTimes(2);
     expect(transform).toHaveBeenCalledTimes(2);
     expect(onFetchingStart).toHaveBeenCalledTimes(2);
@@ -91,9 +94,10 @@ describe('FetchingProvider', () => {
   it('invokes onFetchingError lifecycle on network failure', async () => {
     const onFetchingError = jest.fn();
     const faultyFetch = jest.fn(() => Promise.reject(new Error('Failure')));
+    // @ts-ignore
     global.fetch = faultyFetch;
 
-    RTL.render(<FetchingProvider url="http://any.uri/texts" onFetchingError={onFetchingError} />);
+    RTL.render(<FetchingProvider url="http://any.uri/texts" onFetchingError={onFetchingError} children={null} />);
     await RTL.wait(); // until fetch() rejects
 
     expect(faultyFetch).toHaveBeenCalledTimes(1);
