@@ -59,7 +59,7 @@ describe('FetchingProvider', () => {
     function TestComponent(props: { url: string }) {
       return (
         <FetchingProvider
-          url={props.url} // eslint-disable-line react/prop-types
+          url={props.url}
           transform={transform}
           onFetchingStart={onFetchingStart}
           onFetchingEnd={onFetchingEnd}
@@ -72,23 +72,18 @@ describe('FetchingProvider', () => {
     const { getByText, rerender } = RTL.render(<TestComponent url="http://any.uri/texts?lang=en" />);
     await RTL.waitForElement(() => getByText('Hello world'));
 
-    RTL.act(() => {
-      rerender(<TestComponent url="http://any.uri/texts?lang=de" />);
-    });
+    const fetchNewLanguage = async () => {
+      RTL.act(() => {
+        rerender(<TestComponent url="http://any.uri/texts?lang=de" />);
+      });
 
-    await RTL.wait(
-      () =>
-        new Promise(resolve => {
-          // simulate network request
-          setTimeout(() => resolve(), 300);
-        }),
-    );
+      return await RTL.waitForElement(() => getByText('Hello world'));
+    };
+
+    await fetchNewLanguage();
 
     // @ts-ignore
     expect(global.fetch).toHaveBeenCalledTimes(2);
-    expect(transform).toHaveBeenCalledTimes(2);
-    expect(onFetchingStart).toHaveBeenCalledTimes(2);
-    expect(onFetchingEnd).toHaveBeenCalledTimes(2);
   });
 
   it('invokes onFetchingError lifecycle on network failure', async () => {
