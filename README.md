@@ -45,7 +45,8 @@ An optional fetching lifecycle method. Invoked just after `GET /props.url` respo
 ##### `onFetchingError?: (e?: Error) => void`
 An optional fetching lifecycle method. Invoked when error occurs during fetching/processing stage.
 
-## `useMessageSource(keyPrefix?: string): ComponentAPI`
+## `useMessageSource`
+##### `useMessageSource(keyPrefix?: string): ComponentAPI`
 A React Hook version of the [ComponentAPI](#ComponentApi).
 
 ```js
