@@ -26,6 +26,7 @@
     "coverage": "cross-env CI=1 react-scripts test --coverage --coverageReporters=text-lcov | coveralls",
     "prebuild": "rimraf dist",
     "build": "rollup -c",
+    "postbuild": "node ./scripts/flowgen.js",
     "start": "rollup -c -w",
     "prepare": "yarn run build",
     "predeploy": "cd example && yarn install && yarn run build"
@@ -47,6 +48,8 @@
     "@types/react-test-renderer": "^16.8.1",
     "coveralls": "^3.0.3",
     "cross-env": "^5.2.0",
+    "flowgen": "^1.9.0",
+    "glob": "^7.1.4",
     "prettier": "^1.16.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
