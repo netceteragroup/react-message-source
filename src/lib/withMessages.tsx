@@ -38,25 +38,23 @@ function enhanceWithMessages(keyPrefix: string | undefined, WrappedComponent: Re
 }
 
 /**
- * An internal implementation of the argument resolution logic.
+ * Creates a higher order component and provides the MessageSourceApi as `props`.
  *
- * @param keyPrefixOrComponent the passed argument ([Component] | [[keyPrefix], [Component]])
- */
-function internalWithMessages(keyPrefixOrComponent?: string | React.ComponentType<any>) {
-  if (keyPrefixOrComponent == null || typeof keyPrefixOrComponent === 'string') {
-    // consumer used the curried API
-    return enhanceWithMessages.bind(undefined, keyPrefixOrComponent);
-  }
-
-  return enhanceWithMessages(undefined, keyPrefixOrComponent);
-}
-
-/**
  * Example usages:
  *
  * 1. MessageSource.withMessages('keyPrefix')(Component)
  * 2. MessageSource.withMessages(Component)
  * 3. compose(MessageSource.withMessages('keyPrefix'))(Component)
  * 4. compose(MessageSource.withMessages)(Component)
+ *
+ * @param keyPrefixOrComponent the passed argument ([Component] | [[keyPrefix], [Component]])
  */
-export const withMessages = internalWithMessages;
+export function withMessages(keyPrefixOrComponent?: string | React.ComponentType<any>) {
+  if (keyPrefixOrComponent == null || typeof keyPrefixOrComponent === 'string') {
+    return function wrapWithMessages(Component: React.ComponentType<any>) {
+      return enhanceWithMessages(keyPrefixOrComponent, Component);
+    };
+  }
+
+  return enhanceWithMessages(undefined, keyPrefixOrComponent);
+}
