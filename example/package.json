@@ -6,10 +6,10 @@
   "private": true,
   "dependencies": {
     "prop-types": "^15.7.2",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "react-message-source": "link:..",
-    "react-scripts": "2.1.8"
+    "react-scripts": "^3.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -22,5 +22,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {}
 }
