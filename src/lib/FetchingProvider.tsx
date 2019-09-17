@@ -50,12 +50,12 @@ export interface FetchingProviderApi {
 
 type State = {
   translations: MessageSourceContextShape,
-  isFetching: boolean,
+  isFetched: boolean,
 };
 
 const initialState: State = {
   translations: {},
-  isFetching: false,
+  isFetched: false,
 };
 
 /**
@@ -73,12 +73,12 @@ export function FetchingProvider(props: FetchingProviderApi) {
     onFetchingError = noop,
   } = props;
 
-  const [{ translations, isFetching }, setState] = React.useState<State>(initialState);
+  const [{ translations, isFetched }, setState] = React.useState<State>(initialState);
 
   React.useEffect(() => {
     let isStillMounted = true;
 
-    setState(state => ({ ...state, isFetching: true }));
+    setState((state: State) => ({ ...state, isFetched: false }));
     onFetchingStart();
 
     fetch(url)
@@ -87,7 +87,7 @@ export function FetchingProvider(props: FetchingProviderApi) {
         if (isStillMounted) {
           setState({
             translations: transform(response),
-            isFetching: false,
+            isFetched: true,
           });
           onFetchingEnd();
         }
@@ -99,6 +99,6 @@ export function FetchingProvider(props: FetchingProviderApi) {
     };
   }, [url]); // re-fetch only when url changes
 
-  const shouldRenderSubtree = !blocking || (blocking && !isFetching);
+  const shouldRenderSubtree = !blocking || (blocking && isFetched);
   return <Provider value={translations}>{shouldRenderSubtree ? children : null}</Provider>;
 }
