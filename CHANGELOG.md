@@ -1,8 +1,15 @@
 # Changelog
 
+## v2.3.0
+### Bug fix
+- Fixed issue with FetchingProvider remounting children [#14](https://github.com/netceteragroup/react-message-source/pull/14) - by [@ivanCosic](https://github.com/ivanCosic)
+
+### Internal
+- Upgrade dependencies to their latest version [f774f74](https://github.com/netceteragroup/react-message-source/commit/f774f7423eb6cc13e9e01c280e38fe8dd90262cb) 
+
 ## v2.2.0
 ### Features
-- Include Flow Type definitions as part of the package [#5]((https://github.com/netceteragroup/react-message-source/pull/5)
+- Include Flow Type definitions as part of the package [#5](https://github.com/netceteragroup/react-message-source/pull/5)
 
 ### Internal
 - Upgrade dependencies to their latest version [#6](https://github.com/netceteragroup/react-message-source/pull/6)
