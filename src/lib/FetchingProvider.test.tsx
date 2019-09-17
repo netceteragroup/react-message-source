@@ -3,9 +3,21 @@ import * as RTL from '@testing-library/react';
 import { FetchingProvider } from './FetchingProvider';
 import { useMessageSource } from './useMessageSource';
 
+const noop = () => {};
+
 describe('FetchingProvider', () => {
-  function Spy() {
+  type SpyProps = {
+    onMount?: Function,
+  };
+
+  function Spy({ onMount = noop }: SpyProps) {
     const { getMessage } = useMessageSource();
+
+    // Run onMount only once, when component is mounted initially.
+    React.useEffect(() => {
+      onMount();
+    }, []);
+
     return <span>{getMessage('hello.world')}</span>;
   }
 
@@ -97,5 +109,38 @@ describe('FetchingProvider', () => {
 
     expect(faultyFetch).toHaveBeenCalledTimes(1);
     expect(onFetchingError).toHaveBeenCalledTimes(1);
+  });
+
+  it('mounts children only once', async () => {
+    let timesChildrenAreMounted = 0;
+    const increaseChildrenMountedNumber = () => {
+      timesChildrenAreMounted += 1;
+    };
+
+    const transform = jest.fn(x => x);
+    const onFetchingStart = jest.fn();
+    const onFetchingEnd = jest.fn();
+
+    function TestComponent() {
+      return (
+        <FetchingProvider
+          url="http://any.uri/texts?lang=en"
+          transform={transform}
+          onFetchingStart={onFetchingStart}
+          onFetchingEnd={onFetchingEnd}
+        >
+          <Spy onMount={increaseChildrenMountedNumber} />
+        </FetchingProvider>
+      );
+    }
+
+    const { getByText } = RTL.render(<TestComponent />);
+    const spyNode = await RTL.waitForElement(() => getByText('Hello world'));
+
+    expect(spyNode).toBeDefined();
+    expect(spyNode.innerHTML).toBe('Hello world');
+    // @ts-ignore
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(timesChildrenAreMounted).toBe(1);
   });
 });
