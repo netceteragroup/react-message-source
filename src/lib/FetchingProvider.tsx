@@ -1,7 +1,14 @@
 import * as React from 'react';
 import { MessageSourceContextShape, Provider } from './MessageSourceContext';
+import { logTranslationsNOK } from './utils';
 
-const identityWithFalsenessCheck = (x: any) => (!!x ? x : {});
+const identityWithFalsenessCheck = (x: any) => {
+  if (!!x) {
+    return x;
+  }
+  logTranslationsNOK();
+  return {};
+};
 const noop = () => {};
 
 export interface FetchingProviderApi {
@@ -78,9 +85,7 @@ export function FetchingProvider(props: FetchingProviderApi) {
   React.useEffect(() => {
     let isStillMounted = true;
     const defaultOnFetchingError = () => {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Failed to fetch translations. Setting an empty translation map.');
-      }
+      logTranslationsNOK();
       setState({ translations: {}, isFetched: true });
     };
 
