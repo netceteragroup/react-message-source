@@ -84,7 +84,7 @@ export function FetchingProvider(props: FetchingProviderApi) {
 
   React.useEffect(() => {
     let isStillMounted = true;
-    const defaultOnFetchingError = () => {
+    const initEmptyTranslationMap = () => {
       logTranslationsNOK();
       setState({ translations: {}, isFetched: true });
     };
@@ -103,7 +103,7 @@ export function FetchingProvider(props: FetchingProviderApi) {
           onFetchingEnd();
         }
       })
-      .catch(e => (onFetchingError !== noop ? onFetchingError(e) : defaultOnFetchingError()));
+      .catch(e => (onFetchingError !== noop ? onFetchingError(e) : initEmptyTranslationMap()));
 
     return () => {
       isStillMounted = false;
