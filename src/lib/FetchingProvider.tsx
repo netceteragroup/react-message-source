@@ -77,6 +77,12 @@ export function FetchingProvider(props: FetchingProviderApi) {
 
   React.useEffect(() => {
     let isStillMounted = true;
+    const defaultOnFetchingError = () => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Failed to fetch translations. Setting an empty translation map.');
+      }
+      setState({ translations: {}, isFetched: true });
+    };
 
     setState((state: State) => ({ ...state, isFetched: false }));
     onFetchingStart();
@@ -92,7 +98,7 @@ export function FetchingProvider(props: FetchingProviderApi) {
           onFetchingEnd();
         }
       })
-      .catch(onFetchingError);
+      .catch(e => (onFetchingError !== noop ? onFetchingError(e) : defaultOnFetchingError()));
 
     return () => {
       isStillMounted = false;

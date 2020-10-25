@@ -111,6 +111,28 @@ describe('FetchingProvider', () => {
     expect(onFetchingError).toHaveBeenCalledTimes(1);
   });
 
+  it('invokes defaultOnFetchingError lifecycle on network failure when onFetchingResult is noop', async () => {
+    const faultyFetch = jest.fn(() => Promise.reject(new Error('Failure')));
+    // @ts-ignore
+    global.fetch = faultyFetch;
+
+    function TestComponent() {
+      return (
+        <FetchingProvider url="http://your.website.uri/texts?lang=en">
+          <Spy />
+        </FetchingProvider>
+      );
+    }
+
+    const { getByText } = RTL.render(<TestComponent />);
+    const spyNode = await RTL.waitForElement(() => getByText('hello.world'));
+
+    expect(spyNode).toBeDefined();
+    expect(spyNode.innerHTML).toBe('hello.world');
+    // @ts-ignore
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
   it('mounts children only once', async () => {
     let timesChildrenAreMounted = 0;
     const increaseChildrenMountedNumber = () => {
