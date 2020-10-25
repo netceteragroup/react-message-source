@@ -2,6 +2,7 @@ import * as React from 'react';
 import { MessageSourceContextShape, Provider } from './MessageSourceContext';
 import { logTranslationsNOK } from './utils';
 
+const identity = (x: any): any => x;
 const identityWithFalsenessCheck = (x: any) => {
   if (!!x) {
     return x;
@@ -74,7 +75,7 @@ export function FetchingProvider(props: FetchingProviderApi) {
     url,
     children,
     blocking = true,
-    transform = identityWithFalsenessCheck,
+    transform = identity,
     onFetchingStart = noop,
     onFetchingEnd = noop,
     onFetchingError = noop,
@@ -94,10 +95,12 @@ export function FetchingProvider(props: FetchingProviderApi) {
 
     fetch(url)
       .then(r => r.json())
-      .then(response => {
+      .then(rawTranslations => transform(rawTranslations))
+      .then(transformedTranslations => identityWithFalsenessCheck(transformedTranslations))
+      .then(checkedTranslations => {
         if (isStillMounted) {
           setState({
-            translations: transform(response),
+            translations: checkedTranslations,
             isFetched: true,
           });
           onFetchingEnd();
