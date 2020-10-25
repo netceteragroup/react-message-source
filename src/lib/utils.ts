@@ -20,6 +20,6 @@ export const normalizeKeyPrefix = (keyPrefix: string) =>
  */
 export const logTranslationsNOK = () => {
   if (process.env.NODE_ENV !== 'production') {
-    console.log('Failed to get proper translations. Setting an empty translation map.');
+    console.log('[react-message-source] Failed to get proper translations. Setting an empty translation map.');
   }
 };
