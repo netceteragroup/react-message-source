@@ -64,7 +64,7 @@ describe('FetchingProvider', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
-  it('fetches text resources and inits an empty translation map if result is undefined and transform is noop', async () => {
+  it('fetches text resources and inits an empty translation map if result is undefined', async () => {
     // @ts-ignore
     global.fetch = jest.fn(() =>
       Promise.resolve({
