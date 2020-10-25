@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { MessageSourceContextShape, Provider } from './MessageSourceContext';
 
-const identity = (x: any): any => x;
+const identityWithFalsenessCheck = (x: any) => (!!x ? x : {});
 const noop = () => {};
 
 export interface FetchingProviderApi {
@@ -67,7 +67,7 @@ export function FetchingProvider(props: FetchingProviderApi) {
     url,
     children,
     blocking = true,
-    transform = identity,
+    transform = identityWithFalsenessCheck,
     onFetchingStart = noop,
     onFetchingEnd = noop,
     onFetchingError = noop,

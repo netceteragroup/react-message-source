@@ -64,6 +64,31 @@ describe('FetchingProvider', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
+  it('fetches text resources and inits an empty translation map if result is undefined and transform is noop', async () => {
+    // @ts-ignore
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(undefined),
+      }),
+    );
+
+    function TestComponent() {
+      return (
+        <FetchingProvider url="http://any.uri/texts?lang=en">
+          <Spy />
+        </FetchingProvider>
+      );
+    }
+
+    const { getByText } = RTL.render(<TestComponent />);
+    const spyNode = await RTL.waitForElement(() => getByText('hello.world'));
+
+    expect(spyNode).toBeDefined();
+    expect(spyNode.innerHTML).toBe('hello.world');
+    // @ts-ignore
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
   it('fetches text resources when url prop changes', async () => {
     const transform = jest.fn(x => x);
     const onFetchingStart = jest.fn();
