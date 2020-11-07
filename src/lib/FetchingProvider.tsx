@@ -1,15 +1,7 @@
 import * as React from 'react';
 import { MessageSourceContextShape, Provider } from './MessageSourceContext';
-import { logTranslationsNOK } from './utils';
 
 const identity = (x: any): any => x;
-const identityWithFalsenessCheck = (x: any) => {
-  if (!!x) {
-    return x;
-  }
-  logTranslationsNOK();
-  return {};
-};
 const noop = () => {};
 
 export interface FetchingProviderApi {
@@ -47,6 +39,7 @@ export interface FetchingProviderApi {
 
   /**
    * Invoked when fetching fails.
+   * Note that the previous translations or an empty translation map will be used in case translations fails by default.
    */
   onFetchingError?: (e: Error) => void;
 
@@ -85,28 +78,25 @@ export function FetchingProvider(props: FetchingProviderApi) {
 
   React.useEffect(() => {
     let isStillMounted = true;
-    const initEmptyTranslationMap = () => {
-      logTranslationsNOK();
-      setState({ translations: {}, isFetched: true });
-    };
 
     setState((state: State) => ({ ...state, isFetched: false }));
     onFetchingStart();
 
     fetch(url)
       .then(r => r.json())
-      .then(rawTranslations => transform(rawTranslations))
-      .then(transformedTranslations => identityWithFalsenessCheck(transformedTranslations))
-      .then(checkedTranslations => {
+      .then(response => {
         if (isStillMounted) {
-          setState({
-            translations: checkedTranslations,
+          setState(prevState => ({
+            translations: transform(response) || prevState.translations,
             isFetched: true,
-          });
+          }));
           onFetchingEnd();
         }
       })
-      .catch(e => (onFetchingError !== noop ? onFetchingError(e) : initEmptyTranslationMap()));
+      .catch(e => {
+        onFetchingError(e);
+        setState(prevState => ({ ...prevState, isFetched: true }));
+      });
 
     return () => {
       isStillMounted = false;
