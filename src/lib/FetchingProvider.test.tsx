@@ -64,7 +64,7 @@ describe('FetchingProvider', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
-  it('fetches text resources and inits an empty translation map if result is undefined', async () => {
+  it('fetches text resources and defaults to previous state if result is undefined', async () => {
     // @ts-ignore
     global.fetch = jest.fn(() =>
       Promise.resolve({
@@ -123,27 +123,15 @@ describe('FetchingProvider', () => {
     expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
-  it('invokes onFetchingError lifecycle on network failure', async () => {
+  it('invokes onFetchingError lifecycle and defaults to previous state on network failure', async () => {
     const onFetchingError = jest.fn();
-    const faultyFetch = jest.fn(() => Promise.reject(new Error('Failure')));
-    // @ts-ignore
-    global.fetch = faultyFetch;
-
-    RTL.render(<FetchingProvider url="http://any.uri/texts" onFetchingError={onFetchingError} children={null} />);
-    await RTL.wait(); // until fetch() rejects
-
-    expect(faultyFetch).toHaveBeenCalledTimes(1);
-    expect(onFetchingError).toHaveBeenCalledTimes(1);
-  });
-
-  it('invokes defaultOnFetchingError lifecycle on network failure when onFetchingResult is noop', async () => {
     const faultyFetch = jest.fn(() => Promise.reject(new Error('Failure')));
     // @ts-ignore
     global.fetch = faultyFetch;
 
     function TestComponent() {
       return (
-        <FetchingProvider url="http://your.website.uri/texts?lang=en">
+        <FetchingProvider url="http://your.website.uri/texts?lang=en" onFetchingError={onFetchingError}>
           <Spy />
         </FetchingProvider>
       );
@@ -154,8 +142,8 @@ describe('FetchingProvider', () => {
 
     expect(spyNode).toBeDefined();
     expect(spyNode.innerHTML).toBe('hello.world');
-    // @ts-ignore
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(faultyFetch).toHaveBeenCalledTimes(1);
+    expect(onFetchingError).toHaveBeenCalledTimes(1);
   });
 
   it('mounts children only once', async () => {
