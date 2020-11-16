@@ -39,6 +39,7 @@ export interface FetchingProviderApi {
 
   /**
    * Invoked when fetching fails.
+   * Note that the previous translations or an empty translation map will be used in case translations fails by default.
    */
   onFetchingError?: (e: Error) => void;
 
@@ -85,14 +86,17 @@ export function FetchingProvider(props: FetchingProviderApi) {
       .then(r => r.json())
       .then(response => {
         if (isStillMounted) {
-          setState({
-            translations: transform(response),
+          setState(prevState => ({
+            translations: transform(response) || prevState.translations,
             isFetched: true,
-          });
+          }));
           onFetchingEnd();
         }
       })
-      .catch(onFetchingError);
+      .catch(e => {
+        onFetchingError(e);
+        setState(prevState => ({ ...prevState, isFetched: true }));
+      });
 
     return () => {
       isStillMounted = false;

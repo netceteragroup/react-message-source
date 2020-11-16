@@ -64,6 +64,31 @@ describe('FetchingProvider', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
+  it('fetches text resources and defaults to previous state if result is undefined', async () => {
+    // @ts-ignore
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(undefined),
+      }),
+    );
+
+    function TestComponent() {
+      return (
+        <FetchingProvider url="http://any.uri/texts?lang=en">
+          <Spy />
+        </FetchingProvider>
+      );
+    }
+
+    const { getByText } = RTL.render(<TestComponent />);
+    const spyNode = await RTL.waitForElement(() => getByText('hello.world'));
+
+    expect(spyNode).toBeDefined();
+    expect(spyNode.innerHTML).toBe('hello.world');
+    // @ts-ignore
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
   it('fetches text resources when url prop changes', async () => {
     const transform = jest.fn(x => x);
     const onFetchingStart = jest.fn();
@@ -98,15 +123,25 @@ describe('FetchingProvider', () => {
     expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
-  it('invokes onFetchingError lifecycle on network failure', async () => {
+  it('invokes onFetchingError lifecycle and defaults to previous state on network failure', async () => {
     const onFetchingError = jest.fn();
     const faultyFetch = jest.fn(() => Promise.reject(new Error('Failure')));
     // @ts-ignore
     global.fetch = faultyFetch;
 
-    RTL.render(<FetchingProvider url="http://any.uri/texts" onFetchingError={onFetchingError} children={null} />);
-    await RTL.wait(); // until fetch() rejects
+    function TestComponent() {
+      return (
+        <FetchingProvider url="http://your.website.uri/texts?lang=en" onFetchingError={onFetchingError}>
+          <Spy />
+        </FetchingProvider>
+      );
+    }
 
+    const { getByText } = RTL.render(<TestComponent />);
+    const spyNode = await RTL.waitForElement(() => getByText('hello.world'));
+
+    expect(spyNode).toBeDefined();
+    expect(spyNode.innerHTML).toBe('hello.world');
     expect(faultyFetch).toHaveBeenCalledTimes(1);
     expect(onFetchingError).toHaveBeenCalledTimes(1);
   });
