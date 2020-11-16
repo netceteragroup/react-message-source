@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.3.1
+### Bug fix
+- Network failure could crash the whole application sub-tree [#26](https://github.com/netceteragroup/react-message-source/pull/26) - by [@AndrejGeorgiev](https://github.com/AndrejGeorgiev)
+
 ## v2.3.0
 ### Bug fix
 - Fixed issue with FetchingProvider remounting children [#14](https://github.com/netceteragroup/react-message-source/pull/14) - by [@ivanCosic](https://github.com/ivanCosic)
