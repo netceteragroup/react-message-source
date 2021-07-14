@@ -37,7 +37,7 @@
   },
   "peerDependencies": {
     "prop-types": "^15.5.10",
-    "react": "^16.8.0"
+    "react": ">=16.8.0"
   },
   "devDependencies": {
     "@testing-library/react": "9.1.4",
