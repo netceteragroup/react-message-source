@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.4.0
+### Feature
+- Add support for React v17 - [#46](https://github.com/netceteragroup/react-message-source/pull/46) - by [@vl4d1m1r4](https://github.com/vl4d1m1r4)
+
 ## v2.3.1
 ### Bug fix
 - Network failure could crash the whole application sub-tree [#26](https://github.com/netceteragroup/react-message-source/pull/26) - by [@AndrejGeorgiev](https://github.com/AndrejGeorgiev)
