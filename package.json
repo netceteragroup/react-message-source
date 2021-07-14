@@ -1,6 +1,6 @@
 {
   "name": "react-message-source",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "description": "A library which aids with i18n of React applications",
   "keywords": [
     "intl",
